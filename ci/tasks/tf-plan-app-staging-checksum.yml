@@ -17,4 +17,4 @@ run:
   - -exc
   - |
     mkdir -p "./env-staging/app-staging"
-    echo "$RANDOM" > "./env-staging/app-staging/checksum"
+    echo "$RANDOM" > "./env-staging/app-staging/$RANDOM"
