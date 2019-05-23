@@ -5,17 +5,15 @@ resource_types:
     repository: meshcloud/gate-resource
 
 gate-source: &gate-source
-  git: 
-    uri: git@github.com:Meshcloud/gate-resource-example.git
-    private_key: ((github-key-readwrite))
+  git:
+    uri: https://rymir:((github_token))@github.com/rymir/gate-resource-example.git
     branch: gates
 
 resources:
   - name: repo
     type: git
     source:
-      uri: git@github.com:Meshcloud/gate-resource-example.git
-      private_key: ((github-key-readwrite))
+      uri: https://rymir:((github_token))@github.com/rymir/gate-resource-example.git
       branch: master
 
   - name: a-gate
@@ -36,7 +34,31 @@ resources:
       <<: *gate-source
       gate: autogate
 
+  - name: tf-plan-app-staging-gate
+    type: gate-resource
+    source:
+      <<: *gate-source
+      gate: tf-plan-app-staging-gate
+
 jobs:
+  - name: tf-plan-app-staging-checksum
+    plan:
+    - get: repo
+    - task: tf-plan-app-staging-checksum
+      file: repo/ci/tasks/tf-plan-app-staging-checksum.yml
+    - put: tf-plan-app-staging-gate
+      params:
+        item_file: gate/*
+
+  - name: tf-plan-app-staging
+    plan:
+    - get: repo
+    - get: tf-plan-app-staging-gate
+      trigger: true
+      version: every
+    - task: tf-plan-app-staging
+      file: repo/ci/tasks/tf-plan-app-staging.yml
+
   - name: push-a
     plan:
     - get: repo
@@ -45,7 +67,7 @@ jobs:
     - put: a-gate
       params:
         item_file: gen/*
-  
+
   - name: push-b
     plan:
     - get: repo
@@ -54,11 +76,11 @@ jobs:
     - put: b-gate
       params:
         item_file: gen/*
-    
+
   - name: push-autogate
     plan:
     - get: repo
-    - aggregate:
+    - in_parallel:
       - get: a-gate
       - get: b-gate
     - task: gen
@@ -69,7 +91,7 @@ jobs:
 
   - name: autoclose-autogate
     plan:
-      - aggregate:
+      - in_parallel:
         - get: a-gate
           trigger: true
         - get: b-gate
@@ -80,7 +102,7 @@ jobs:
 
   - name: echo
     plan:
-      - aggregate:
+      - in_parallel:
         - get: repo
         - get: auto-gate
           trigger: true

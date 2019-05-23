@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine
+    tag: "3.6"
+
+inputs:
+- name: tf-plan-app-staging-gate
+
+run:
+  path: sh
+  dir: tf-plan-app-staging-gate
+  args:
+  - -exc
+  - |
+    ls -la
