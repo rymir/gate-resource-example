@@ -13,4 +13,5 @@ run:
   args:
   - -exc
   - |
+    ls -la
     [ -f ./failed ] && exit 1 || exit 0
