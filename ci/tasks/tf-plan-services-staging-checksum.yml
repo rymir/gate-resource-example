@@ -16,5 +16,5 @@ run:
   args:
   - -exc
   - |
-    # touch ./failed
+    touch ./failed
     exit 1
