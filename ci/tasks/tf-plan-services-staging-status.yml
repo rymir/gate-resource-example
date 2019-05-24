@@ -7,6 +7,9 @@ image_resource:
     repository: busybox
     tag: "1.30"
 
+inputs:
+- name: status
+
 run:
   path: sh
   dir: status
