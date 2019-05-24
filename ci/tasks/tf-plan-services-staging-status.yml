@@ -7,14 +7,10 @@ image_resource:
     repository: busybox
     tag: "1.30"
 
-outputs:
-  - name: status
-
 run:
   path: sh
   dir: status
   args:
   - -exc
   - |
-    touch ./failed
-    exit 1
+    [ -f ./failed ] && exit 1

@@ -44,8 +44,13 @@ jobs:
   - name: tf-plan-services-staging-checksum
     plan:
     - get: repo
-    - task: tf-plan-services-staging-checksum
-      file: repo/ci/tasks/tf-plan-services-staging-checksum.yml
+      trigger: true
+      version: latest
+    - try:
+        task: tf-plan-services-staging-checksum
+        file: repo/ci/tasks/tf-plan-services-staging-checksum.yml
+    - task: tf-plan-services-staging-status
+      file: repo/ci/tasks/tf-plan-services-staging-status.yml
 
   - name: tf-plan-app-staging-checksum
     plan:
