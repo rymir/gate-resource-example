@@ -41,6 +41,12 @@ resources:
       gate: tf-plan-app-staging-gate
 
 jobs:
+  - name: tf-plan-services-staging-checksum
+    plan:
+    - get: repo
+    - task: tf-plan-services-staging-checksum
+      file: repo/ci/tasks/tf-plan-services-staging-checksum.yml
+
   - name: tf-plan-app-staging-checksum
     plan:
     - get: repo
@@ -48,7 +54,7 @@ jobs:
       file: repo/ci/tasks/tf-plan-app-staging-checksum.yml
     - put: tf-plan-app-staging-gate
       params:
-        item_file: gate/env-staging/app-staging/checksum
+        item_file: gate/env-staging/app-staging/*
 
   - name: tf-plan-app-staging
     plan:
